@@ -1,0 +1,37 @@
+name: Lambda Function
+
+env:
+  # environment vars
+  ARTIFACT_NAME: lambdafn-${{ github.sha }}
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  run_lambda:
+    runs-on: ubuntu-latest
+    name: Run Lambda Function
+    steps:
+      - name: Step 1 - Checkout code
+        uses: actions/checkout@v2
+
+      - name: Step 2 - Install AWS Cli
+        run: sudo pip install awscli
+
+      - name: Step 3 - Set correct aws environment
+        run: |
+          aws configure set region us-east-1
+          aws configure set aws_access_key_id ${{ secrets.AWS_GHUSER_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_GHUSER_SECRET_ACCESS_KEY }}
+
+      - name: zip files
+        run : zip ${{ env.ARTIFACT_NAME }}.zip index.js package.json
+
+      - name: Step 4 - Upload Artifact/zip files to s3 bucket
+        run: |
+          aws s3 cp ${{ env.ARTIFACT_NAME }}.zip s3://${{ secrets.AWS_PRODUCTION_CODEDEPLOY_BUCKETNAME }}/
+      
+      - name: Step 5 - Update Function
+        run: |
+          aws lambda update-function-code --function-name EmailVerification --s3-bucket ${{ secrets.AWS_PRODUCTION_CODEDEPLOY_BUCKETNAME }} --s3-key ${{ env.ARTIFACT_NAME }}.zip
