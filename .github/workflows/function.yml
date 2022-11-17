@@ -6,7 +6,7 @@ env:
 
 on:
   push:
-    branches: [main]
+    branches: [main, workflow_dispatch]
 
 jobs:
   run_lambda:
@@ -22,11 +22,11 @@ jobs:
       - name: Step 3 - Set correct aws environment
         run: |
           aws configure set region us-east-1
-          aws configure set aws_access_key_id ${{ secrets.AWS_GHUSER_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_GHUSER_SECRET_ACCESS_KEY }}
+          aws configure set aws_access_key_id ${{ secrets.AWS_LAMBDA_ACCESS_KEY }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_LAMBDA_SECRET_KEY }}
 
       - name: zip files
-        run : zip ${{ env.ARTIFACT_NAME }}.zip index.js package.json
+        run : zip ${{ env.ARTIFACT_NAME }}.zip .
 
       - name: Step 4 - Upload Artifact/zip files to s3 bucket
         run: |
