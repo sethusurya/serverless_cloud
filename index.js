@@ -40,9 +40,15 @@ exports.emailVerification = (event, context, callback) => {
                 const msg = {
                     to: emailId, // Change to your recipient
                     from: 'no-reply@sethusurya.com', // Change to your verified sender
-                    subject: 'Sending with SendGrid is Fun',
-                    text: 'and easy to do anywhere, even with Node.js',
-                    html: '<div><strong>and easy to do anywhere, even with Node.js</strong><p>hello sethu</p></div>',
+                    subject: 'Verify your Account',
+                    html: `<div>
+                    <p>Hello,</p>                               
+                    <p>Thank you for registering for our services at sethu.</p>                     
+                    <p>Verify your email and enjoy full benefits</p>
+                    <p><a href=\"http://${process.env.DomainName}/v1/verifyUserEmail?email=${emailId}&token=${tokenValue}\" target=\"_blank\">Click to verify your account</a></p>
+                    <p>If the link doesn't work, use a browser and paste the link: </p>
+                    <p>http://${process.env.DomainName}/v1/verifyUserEmail?email=${emailId}&token=${tokenValue}</p>
+                    </div>`,
                 }
                 sgMail
                     .send(msg)
