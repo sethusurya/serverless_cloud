@@ -13,6 +13,8 @@ exports.emailVerification = (event, context, callback) => {
     console.log("email is: "+event.Records[0].Sns.MessageAttributes.emailid.Value)
     let emailId = event.Records[0].Sns.MessageAttributes.emailid.Value
     let tokenValue = event.Records[0].Sns.MessageAttributes.token.Value
+
+    let encodedEmailId = encodeURIComponent(emailId);
     
     let getEmailListParams = {
         TableName: 'emailListTbl',
@@ -45,9 +47,9 @@ exports.emailVerification = (event, context, callback) => {
                     <p>Hello,</p>                               
                     <p>Thank you for registering for our services at sethu.</p>                     
                     <p>Verify your email and enjoy full benefits</p>
-                    <p><a href=\"http://${process.env.DomainName}/v1/verifyUserEmail?email=${emailId}&token=${tokenValue}\" target=\"_blank\">Click to verify your account</a></p>
+                    <p><a href=\"http://${process.env.DomainName}/v1/verifyUserEmail?email=${encodedEmailId}&token=${tokenValue}\" target=\"_blank\">Click to verify your account</a></p>
                     <p>If the link doesn't work, use a browser and paste the link: </p>
-                    <p>http://${process.env.DomainName}/v1/verifyUserEmail?email=${emailId}&token=${tokenValue}</p>
+                    <p>http://${process.env.DomainName}/v1/verifyUserEmail?email=${encodedEmailId}&token=${tokenValue}</p>
                     </div>`,
                 }
                 sgMail
