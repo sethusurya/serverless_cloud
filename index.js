@@ -46,7 +46,7 @@ exports.emailVerification = (event, context, callback) => {
                 }
                 sgMail
                     .send(msg)
-                    .then(() => {
+                    .then((data) => {
                     console.log('Email sent')
                     documentClient.put(putEmailParams, (err, data) => {
                         if (err) {
